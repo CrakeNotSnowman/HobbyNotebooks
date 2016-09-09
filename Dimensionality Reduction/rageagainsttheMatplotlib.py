@@ -10,6 +10,7 @@ import math
 from sklearn.decomposition import ProjectedGradientNMF
 import re
 
+#print sys.executable
 # My personal Libraries 
 import kmlistfi
 
@@ -170,7 +171,7 @@ class termDocMatrix(object):
     def spectralEmbed(self, k, n_neighbors=10):
         from sklearn import manifold
         se = manifold.SpectralEmbedding(n_components=k, n_neighbors=n_neighbors)
-        Yse = se.fit_transform(self.tdm)
+        Yse = se.fit_transform(self.tdm.T)
         print len(Yse)
         return Yse
 
@@ -185,7 +186,9 @@ class termDocMatrix(object):
         print "\tNMF Error: ", self.er
         return P, Q
 
+from nltk.corpus import stopwords
 
+cachedStopWords = stopwords.words("english")
 
 
 tdm = termDocMatrix()
@@ -197,15 +200,18 @@ for i in range(len(fls)):
     flname = flname.split('/')[-1][:-4]
     print '\t', i, '\t', flname
     line = re.sub('[\t\n\r]', ' ', lines)
+    line = re.sub("[']", ' ', line)
+    line = re.sub('[/",.?!@#$%&*()/]/[:;{}]', ' ', line)
+    #line = ' '.join([word for word in line.split() if word not in cachedStopWords])
     tdm.add(lines, flname)
-
+tdm.add("A The and this that is was be being been in out up down are I me my is am was", "Bias Point")
 
 
 tdm.weight_idf()
 
 #tdm.nmf(2)
 
-Yse = tdm.spectralEmbed(2, n_neighbors=15)
+Yse = tdm.spectralEmbed(2, n_neighbors=10)
 print len(Yse)
 
 from matplotlib.pyplot import figure, show
@@ -222,9 +228,9 @@ if 1: # picking on a scatter plot (matplotlib.collections.RegularPolyCollection)
     
     def onpick3(event):
         ind = event.ind
-        print ind, type(ind)
+        #print ind, type(ind)
         if type(ind) == numpy.ndarray:
-            print "YOU"
+            #print "YOU"
             ind = ind[0]
         print 'onpick3 scatter:', tdm.docs[ind]#, npy.take(x, ind), npy.take(y, ind)
 

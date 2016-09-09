@@ -209,16 +209,16 @@ tdm.add("A The and this that is was be being been in out up down are I me my is 
 
 tdm.weight_idf()
 
-#tdm.nmf(2)
+tdm.nmf(2)
 
-Yse = tdm.spectralEmbed(2, n_neighbors=10)
-print len(Yse)
+#Yse = tdm.spectralEmbed(2, n_neighbors=10)
+#print len(Yse)
 
 from matplotlib.pyplot import figure, show
 import numpy as npy
 from numpy.random import rand
 
-temp = zip(*Yse)
+temp = zip(*tdm.P)
 x = temp[0]
 y = temp[1]
 print len(x), len(temp)
@@ -232,7 +232,7 @@ if 1: # picking on a scatter plot (matplotlib.collections.RegularPolyCollection)
         if type(ind) == numpy.ndarray:
             #print "YOU"
             ind = ind[0]
-        print 'onpick3 scatter:', tdm.docs[ind]#, npy.take(x, ind), npy.take(y, ind)
+        print 'onpick3 scatter:', tdm.terms[ind]#, npy.take(x, ind), npy.take(y, ind)
 
     fig = figure()
     ax1 = fig.add_subplot(111)
